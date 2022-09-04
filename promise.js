@@ -129,8 +129,47 @@ function resolvePromise(promise2, x, resolve, reject){
     resolve(x)
   }
 }
+
+function isPromise(x) {
+  if((typeof x === 'object' && x !== null) || typeof x === 'function') {
+    if (typeof x.then === 'function') {
+      return true
+    }
+  }
+  return false
+}
 new _Promise((resolve, reject) => {
   setTimeout(()=>{
     resolve(2)
   }, 1000)
 }).then(res => res).then(res => console.log(res))
+
+// 实现promise.all
+_Promise.all = function(values) {
+  return new _Promise((resolve, reject) => {
+    let arr = [], times = 0
+    function collectRes (value, i) {
+      arr[i] = value
+      if(++times === values.length) {
+        resolve(arr)
+      }
+    }
+    for(let i=0; i<values.length; i++) {
+      if(isPromise(values[i])) {
+        values[i].then(y => {
+          collectRes(y, i)
+        }, reject)
+      } else {
+        collectRes(values[i], i)
+      }
+    }
+  })
+}
+
+_Promise.all([1,3,4]).then(data => {
+  console.log(data)
+}).catch(err => {
+  console.log(err)
+})
+
+// 实现promise.race
