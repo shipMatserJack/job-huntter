@@ -173,3 +173,14 @@ _Promise.all([1,3,4]).then(data => {
 })
 
 // 实现promise.race
+
+_Promise.race = function (promiseArr) {
+  return new Promise((resolve, reject) => {
+    promiseArr.forEach(item => {
+      _Promise.resolve(item).then(
+        val => resolve(val),
+        reason => reject(reason)
+      )
+    })
+  })
+}
