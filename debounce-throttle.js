@@ -2,9 +2,10 @@
 function debounce (fn, interval) {
   let timer
   return function() {
+    let _this = this
     if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
-      fn.apply(this, arguments)
+      fn.apply(_this, arguments)
     }, interval);
   }
 }
@@ -13,10 +14,11 @@ function debounce (fn, interval) {
 function throttle (fn, interval) {
   let flag = true
   return function() {
+    let _this = this
     if(!flag) return
     flag = false
     setTimeout(()=> {
-      fn.apply(this, arguments)
+      fn.apply(_this, arguments)
       flag = true
     }, interval)
   }
