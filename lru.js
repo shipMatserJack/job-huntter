@@ -5,7 +5,7 @@ class LRUCache {
   }
 
   get (key) {
-    if (!this.cache.has(key)) return null
+    if (!this.cache.has(key)) return -1
     const value = this.cache.get(key)
     this.cache.delete(key) //删除记录
     this.cache.set(key, value) // 插入之最前面，确保最近使用原则
