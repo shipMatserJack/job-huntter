@@ -24,3 +24,10 @@ function add() {
 
 console.log(add(1)(2)(3))
 console.log(add(1)(2)(3).toString())
+
+function sum(...args) {
+  const f = (...rest) => sum(...args, ...rest);
+  f.valueOf = () => args.reduce((x, y) => x + y, 0);
+  return f;
+}
+console.log(sum(1)(2)(3).valueOf())
