@@ -15,7 +15,6 @@ function mutiRequest (reqArr, limit) {
       const cur = i++
       const fn = reqArr[cur]
       const data = await fn.catch(err => err)
-      console.log(data)
       resArr[cur] = data
       if (i === reqLength) resolve(resArr)
       else reqFn()
@@ -35,4 +34,6 @@ mutiRequest([
   req(2, 500),
   req(3, 5000),
   req(4, 1000)],
-  2)
+  2).then(res => {
+    console.log(res)
+  })
