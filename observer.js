@@ -29,7 +29,7 @@ class Observer {
   }
 
   update (state) {
-    console.log(this.name + 'say' + state);
+    console.log(this.name + ' say' + state);
   }
 }
 
