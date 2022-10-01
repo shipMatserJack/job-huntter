@@ -6,7 +6,7 @@
  */
 function _assign (target, ...source) {
   if (target === null || target === undefined) {
-    throw new TypeError('Connot convert null or undefined to object')
+    throw new TypeError('Cannot convert null or undefined to object')
   }
   const res = Object(target)
   source.forEach(obj => {
