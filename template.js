@@ -1,4 +1,10 @@
 
+/**
+ * 实现模版字符串
+ * @param {*} template 
+ * @param {*} data 
+ * @returns 
+ */
 function render (template, data) {
   const reg = /\{\{(\w+)\}\}/
   if (reg.test(template)) {
