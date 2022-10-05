@@ -27,14 +27,16 @@ const EventListener = {
   getEvent (event) {
     return event || window.event
   },
-  // 组织默认事件
+  // 阻止默认事件
   stopPropagation (event) {
     if (event.stopPropagation) event.stopPropagation()
+    // 兼容ie
     else event.cancelBubble = true
   },
   // 取消默认行为
   preventDefault (event) {
     if (event.preventDefault) event.preventDefault()
+    // 兼容ie
     else event.returnValue = false
   }
 }
