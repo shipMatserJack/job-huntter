@@ -156,9 +156,11 @@ _Promise.all = function(values) {
     }
     for(let i=0; i<values.length; i++) {
       if(isPromise(values[i])) {
-        values[i].then(y => {
+        values[i]
+          .then(y => {
           collectRes(y, i)
         }, reject)
+          .catch(e => reject(e))
       } else {
         collectRes(values[i], i)
       }
