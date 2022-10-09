@@ -1,3 +1,12 @@
+// Array.prototype.flat()  特性总结
+
+// Array.prototype.flat() 用于将嵌套的数组“拉平”，变成一维的数组。该方法返回一个新数组，对原数据没有影响。
+// 不传参数时，默认“拉平”一层，可以传入一个整数，表示想要“拉平”的层数。
+// 传入 <=0 的整数将返回原数组，不“拉平”
+// Infinity 关键字作为参数时，无论多少层嵌套，都会转为一维数组
+// 如果原数组有空位，Array.prototype.flat() 会跳过空位。
+
+
 // function flat(arr) {
 //   if (!Array.isArray(arr)) {
 //     throw new TypeError('Params must be array')
