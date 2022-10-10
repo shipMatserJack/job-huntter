@@ -10,6 +10,51 @@ const PENDING = 'PENDING';
 const FULFILLED = 'FULFILLED';
 const REJECTED = 'REJECTED'; 
 
+function resolvePromise(promise2, x, resolve, reject){
+  if (promise2 === x) {
+    return reject(
+      new TypeError('Chaining cycle detected for promise #<Promise>')
+    )
+  }
+  if ((typeof x === 'object' && x !== null) || typeof x === 'function') {
+    let called;
+    try {
+      const then = x.then
+      if (typeof then !== 'function'){
+        resolve(x)
+      } else {
+        then.call(
+          x, 
+          value => {
+            if(called) return
+            called = true
+            resolvePromise(promise2, value, resolve, reject)
+          }, 
+          reason => {
+            if(called) return
+            called = true
+            reject(reason)
+          })
+      }
+    } catch (error) {
+      if(called) return
+      called = true
+      reject(error)
+    }
+  } else {
+    resolve(x)
+  }
+}
+
+function isPromise(x) {
+  if((typeof x === 'object' && x !== null) || typeof x === 'function') {
+    if (typeof x.then === 'function') {
+      return true
+    }
+  }
+  return false
+}
+
 class _Promise {
   constructor(executor) {
     if (typeof executor !== 'function') {
@@ -93,56 +138,31 @@ class _Promise {
   catch(errFn) {
     return this.then(null, errFn)
   }
-}
-function resolvePromise(promise2, x, resolve, reject){
-  if (promise2 === x) {
-    return reject(
-      new TypeError('Chaining cycle detected for promise #<Promise>')
-    )
-  }
-  if ((typeof x === 'object' && x !== null) || typeof x === 'function') {
-    let called;
-    try {
-      const then = x.then
-      if (typeof then !== 'function'){
-        resolve(x)
-      } else {
-        then.call(
-          x, 
-          value => {
-            if(called) return
-            called = true
-            resolvePromise(promise2, value, resolve, reject)
-          }, 
-          reason => {
-            if(called) return
-            called = true
-            reject(reason)
-          })
-      }
-    } catch (error) {
-      if(called) return
-      called = true
-      reject(error)
-    }
-  } else {
-    resolve(x)
+  finally (cb) {
+    return this.then(cb, cb)
   }
 }
 
-function isPromise(x) {
-  if((typeof x === 'object' && x !== null) || typeof x === 'function') {
-    if (typeof x.then === 'function') {
-      return true
-    }
-  }
-  return false
-}
 new _Promise((resolve, reject) => {
   setTimeout(()=>{
     resolve(2)
   }, 1000)
 }).then(res => res).then(res => console.log(res))
+
+// 实现promise.resolve
+_Promise.resolve = function (p) {
+  if (p instanceof _Promise) {
+    return p
+  } else if(p instanceof Object && 'then' in p) {
+    return new _Promise((resolve, reject) => {
+      p.then(resolve, reject)
+    })
+  } else {
+    return new _Promise((resolve) => {
+      resolve(p)
+    })
+  }
+}
 
 // 实现promise.all
 _Promise.all = function(values) {
