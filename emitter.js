@@ -3,11 +3,11 @@
 class Emitter {
   constructor() {
     this.eventObj = {}
-    this.cbId = 0
+    this.cbId = null
   }
 
-  on(name, cb) {
-    if(!this.eventObj[name]) {
+  on (name, cb) {
+    if (!this.eventObj[name]) {
       this.eventObj[name] = {}
     }
     const id = this.cbId++
@@ -15,30 +15,32 @@ class Emitter {
     return id
   }
 
-  emit(name, ...args) {
-    const eventList = this.eventObj[name]
-    for(const id in eventList) {
-      eventList[id](...args)
-      if(id.indexOf('once') > -1) {
-        delete eventList[id]
-      }
-    }
-  }
-
-  off(name, id) {
-    delete this.eventObj[name][id]
-    if(!Object.keys(this.eventObj[name]).length) {
-      delete this.eventObj[name]
-    }
-  }
-
-  once(name ,cb) {
-    if(!this.eventObj[name]) {
+  once(name, cb) {
+    if (!this.eventObj[name]) {
       this.eventObj[name] = {}
     }
     const id = 'once' + this.cbId++
     this.eventObj[name][id] = cb
     return id
+  }
+
+  off (name, id) {
+    if(this.eventObj[name][id]) {
+      delete this.eventObj[name][id]
+    }
+    if (Object.keys(this.eventObj[name]).length === 0) {
+      delete this.eventObj[name]
+    }
+  }
+
+  emit (name, ...args) {
+    const eventList = this.eventObj[name]
+    for(const id in eventList) {
+      eventList[id](...args)
+      if (id.indexOf('once') > -1) {
+        delete eventList[id]
+      }
+    }
   }
 }
 
