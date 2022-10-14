@@ -1,8 +1,9 @@
 Function.prototype.myCall = function() {
   const [ctx, ...args] = arguments
-  ctx.fn = this || window
-  const res = ctx.fn(...args)
-  delete ctx.fn
+  const fn = Symbol('fn')
+  ctx[fn] = this || window
+  const res = ctx[fn](...args)
+  delete ctx[fn]
   return res
 }
 // let obj2 = {
@@ -20,12 +21,12 @@ Function.prototype.myCall = function() {
 // obj1.getName.myCall(obj2, 3, 4)
 // console.log(obj2)
 
-
 Function.prototype.myApply = function () {
   const [ctx, args] = arguments
-  ctx.fn = this || window
-  const res = ctx.fn(...args)
-  delete ctx.fn
+  const fn = Symbol('fn')
+  ctx[fn] = this || window
+  const res = ctx[fn](...args)
+  delete ctx[fn]
   return res
 }
 
@@ -45,23 +46,22 @@ Function.prototype.myApply = function () {
 // obj1.getName.myCall(obj2, [3, 4])
 // console.log(obj2)
 
-
 Function.prototype.myBind = function () {
-  let that = this;
-  const [ctx, bindArgs] = arguments
+  const that = this
+  const [ctx, args] = arguments
   return function () {
-    return that.apply(ctx, bindArgs);
-  };
+    return that.apply(ctx, args)
+  }
 }
 
-let obj1 = {
-  age: '2',
-};
-let obj2 = {
-  age: '88',
-  getInfo: function (name) {
-    return `${name} 今年${this.age} 岁`;
-  },
-};
-let p = obj2.getInfo.myBind(obj1, '小明');
-console.log(p)
+// let obj1 = {
+//   age: '2',
+// };
+// let obj2 = {
+//   age: '88',
+//   getInfo: function (name) {
+//     return `${name} 今年${this.age} 岁`;
+//   },
+// };
+// let p = obj2.getInfo.myBind(obj1, '小明');
+// console.log(p)
